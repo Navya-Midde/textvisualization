@@ -2,12 +2,13 @@ import streamlit as st
 import pdfplumber
 import docx
 from wordcloud import WordCloud
-from textblob import TextBlob
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from collections import Counter
 import numpy as np
+import re
+
 # 📄 Extract text from PDF using pdfplumber
 def extract_text_pdf(file):
     text = ""
@@ -21,6 +22,13 @@ def extract_text_docx(file):
     doc = docx.Document(file)
     return "\n".join([para.text for para in doc.paragraphs])
 
+# 🧹 Basic text preprocessing without NLTK
+def preprocess_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    tokens = text.split()
+    return tokens
+
 # ☁️ Generate Word Cloud
 def show_wordcloud(tokens):
     wc = WordCloud(width=800, height=400, background_color='white').generate(" ".join(tokens))
@@ -28,6 +36,7 @@ def show_wordcloud(tokens):
     plt.imshow(wc, interpolation='bilinear')
     plt.axis('off')
     st.pyplot(plt)
+
 # 📊 Word Frequency Bar Graph
 def show_frequency(tokens):
     freq = Counter(tokens).most_common(20)
@@ -73,4 +82,3 @@ if uploaded_file:
         show_frequency(tokens)
     elif option == "Heatmap":
         show_heatmap(tokens)
-
