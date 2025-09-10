@@ -1,0 +1,6 @@
+python-docx
+pdfplumber
+nltk
+textblob
+wordcloud 
+seaborn
